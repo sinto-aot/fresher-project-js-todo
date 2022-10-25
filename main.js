@@ -1,20 +1,25 @@
 let arr = [];
-
+getLocalStorage()
 let addBtn = document.querySelector('#add-task')
 let editBtn = document.querySelector('#edit-task')
+
+let allCount = document.getElementById('all-count')
+let activeCount = document.getElementById('active-count')
+let completedCount = document.getElementById('completed-count')
+
 document.querySelector('#add-task').onclick = function() {
     if (document.querySelector('#task-title').value.length == 0) {
-        alert("Enter The task name")
+        alert("Please enter the task title")
     } else {
-        acceptData();
-        addTask();
-        add.setAttribute("data-bs-dismiss", "modal")
+        inputData();
+        activeTask();
+        // add.setAttribute("data-bs-dismiss", "modal")
     }
 }
 
 
 
-function acceptData(){
+function inputData(){
     let title = document.querySelector('#task-title').value;
     let description = document.querySelector('#task-description').value;
     let date = document.querySelector('#theDate').value;
@@ -22,38 +27,49 @@ function acceptData(){
         objtitle: title,
         objdescription: description,
         objdate: date,
-        isCompleted: false
+        isCompleted: false,
+        status : "active"
     }
     arr.push(obj)
-    console.log(arr);
+    setLocalStorage()
+    taskCount()
 }
 
+// Local Storage
+// Set Local Storage
+function setLocalStorage(){
+    localStorage.setItem("taskData", JSON.stringify(arr))
+}
 
-function addTask(){
+// Get Local Storage
+function getLocalStorage() {
+    arr = JSON.parse(localStorage.getItem("taskData")) || [];
+}
+activeTask()
+completedTask()
+
+// Active Tasks
+function activeTask(){
     document.querySelector('#active').innerHTML = ""
     for (i = 0; i < arr.length; i++) {
         if (arr[i].isCompleted == false) {
-            document.querySelector('#active').innerHTML += ` 
+            document.querySelector('#active').innerHTML += `
         <!-- Add Task -->
-            <div  class="d-flex justify-content-between align-items-center taskcontent mt-3 ">
+            <div  class="d-flex justify-content-between align-items-center taskcontent mt-3 task-item" >
                 <div class="form-check d-flex ms-4">
                     <div>
-                        <input class="form-check-input rounded-circle " onclick='acceptcheckbox(${i});completedTask();addTask()' type="checkbox" value="" id="check${i}">
+                        <input class="form-check-input rounded-circle " onclick='checkedTask(${i});completedTask(); activeTask(); taskCount()' type="checkbox" value="" id="check${i}">
                     </div>
                     <div class="ms-3">
                         <label class="form-check-label" for="check">
-                            <h1 class="addedtaskheading ">
-                            ${arr[i].objtitle}
-                            <h1>
-                            <p class="date">${arr[i].objdate} 
-                            <p>
+                            <h1 class="task-title "> ${arr[i].objtitle} <img src="/img/yellow-dot.png" ></h1>                         
+                            <p class="date">by ${arr[i].objdate} </p>                           
                         </label>
                     </div>
                 </div>
-                <button class="edit" data-bs-toggle="modal" data-bs-target="#exampleModal2${i}" ><i class="bi bi-pencil-fill"></i></button>
-                <button class="delete me-4"><i class="bi bi-trash" data-bs-toggle="modal" data-bs-target="#exampleModaldel${i}" ></i></button>
+                <button class="edit" data-bs-toggle="modal" data-bs-target="#exampleModal2${i}" ><img src="/img/edit-icon.png"></button>
+                <button class="delete me-4"><img src="/img/delete-icon.png" data-bs-toggle="modal" data-bs-target="#exampleModaldel${i}"></i></button>
             </div>
-
         
         <!-- Edit Task -->
        
@@ -62,23 +78,22 @@ function addTask(){
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Task</h1>
+                            <h1 class="modal-title fs-5" id="exampleModalLabel" >Edit Task</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- pop up add task form -->
                             <form>
                             <div class="mb-3">
-                                <label for="task-title2" class="form-label">Title*</label> 
+                                <label for="task-title2" class="form-label modal-input-title">Title</label> 
                                 <input type="text" class="form-control" id="task-title${i}" value="${arr[i].objtitle}">
                                 <div class="invalid-feedback">
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="task-description" class="form-label">Description</label>
+                                <label for="task-description" class="form-label modal-input-title">Description</label>
                                 <textarea class="form-control" id="task-description${i}" rows="3">${arr[i].objdescription} </textarea>
                             </div>
-                            <label for="task-description" class="form-label">Due date</label>
+                            <label for="task-description" class="form-label modal-input-title ">Due date</label>
                             <input type="date"  class="form-control mt-2 mb-3" id="theDate${i}" value="${arr[i].objdate}"></input>
                             </form>
                         </div>
@@ -91,13 +106,12 @@ function addTask(){
             </div>
         </div>
 
-
         <!-- Delete Task -->
 
         <div class="modal fade" id="exampleModaldel${i}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-header border-0 pt-4 d-flex justify-content-center">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Task?</h1>
                     </div>
@@ -130,37 +144,34 @@ function clear() {
 // Delete Tasks
 function deleteItem(i) {
     arr.splice(i, 1)
-    addTask()
+    activeTask()
     completedTask()
+    setLocalStorage()
+    taskCount()
     console.log(arr)
     console.log("delete operation done")
 
 }
 
-// Edit Tasks
-// let editTask = (i) => {
-//     arr[i].objtitle = document.getElementById(`#task-title${i}`).value;
-//     arr[i].objdescription = document.getElementById(`#task-description${i}`).value;
-//     arr[i].objdate = document.getElementById(`#theDate${i}`).value;
-//     console.log('edit done')
-//     console.log(arr)
-//     addTask()
-//     completedTask()
-// }
 
+// Edit Task
 function editTask(i){
-    // arr[i].objtitle = document.getElementById(`task-title${i}`).value
     arr[i].objtitle = document.getElementById(`task-title${i}`).value
     arr[i].objdescription = document.getElementById(`task-description${i}`).value
     arr[i].objdate = document.getElementById(`theDate${i}`).value
-    addTask()
+    activeTask()
     completedTask()
     console.log("Task Updated")
     console.log(arr)
+    setLocalStorage()
+    
 }
 
 
 //Sort By Title
+// a = First Index
+// b = Second Index
+
 function sortByTitle() {
     arr.sort(function(a,b) {
         if (a.objtitle.toLowerCase() < b.objtitle.toLowerCase()) return -1;
@@ -168,33 +179,35 @@ function sortByTitle() {
         return 0;
     });
     document.querySelector('#active').innerHTML = ""
-    addTask();
+    activeTask();
     completedTask();
+    setLocalStorage()
 
 }
 
 // Sort By Date
 function sortByDate() {
     arr.sort(function(a,b) {
-        let datea = new Date(a.objdate);
-        let dateb = new Date(b.objdate);
-        if (datea < dateb) return -1;
-        if (datea > dateb) return 1;
+        let dateA = new Date(a.objdate);
+        let dateB = new Date(b.objdate);
+        if (dateA < dateB) return -1;
+        if (dateB > dateB) return 1;
         return 0;
     });
     document.querySelector('#active').innerHTML = ""
-    addTask();
+    activeTask();
     completedTask();
+    setLocalStorage()
 
 }
 
 // Clicked Checkbox
-function acceptcheckbox(i) {
+function checkedTask(i) {
     cb = document.querySelector(`#check${i}`);
     arr[i].isCompleted = cb.checked
     console.log(arr);
     console.log("checkbox checked")
-
+    setLocalStorage()
 }
 
 
@@ -210,57 +223,53 @@ function completedTask(){
             <div  class="d-flex justify-content-between align-items-center taskcontent mt-3 ">
                 <div class="form-check d-flex ms-4">
                     <div>
-                        <input class="form-check-input rounded-circle " onclick='acceptcheckbox(${i});completedTask();addTask()' type="checkbox" value="" id="check${i}" checked>
+                        <input class="form-check-input rounded-circle " onclick='checkedTask(${i}); completedTask(); activeTask()' type="checkbox" value="" id="check${i}" checked>
                     </div>
                     <div class="ms-3">
                         <label class="form-check-label" for="check">
-                            <h1 class="addedtaskheading ">
-                            ${arr[i].objtitle}
-                            <h1>
-                            <p class="date">${arr[i].objdate} 
-                            <p>
+                            <h1 class="task-title "> ${arr[i].objtitle} <img src="/img/green-dot.png" ><h1>                         
+                            <p class="date">by ${arr[i].objdate}<p>                          
                         </label>
                     </div>
                 </div>
-                <button class="edit" data-bs-toggle="modal" data-bs-target="#exampleModal2${i}" ><i class="bi bi-pencil-fill"></i></button>
-                <button class="delete me-4"><i class="bi bi-trash" data-bs-toggle="modal" data-bs-target="#exampleModaldel${i}" ></i></button>
-            </div>  
-        
+                <button class="edit" data-bs-toggle="modal" data-bs-target="#exampleModal2${i}" ><img src="/img/edit-icon.png" ></i></button>
+                <button class="delete me-4"><img src="/img/delete-icon.png" data-bs-toggle="modal" data-bs-target="#exampleModaldel${i}"></i></button>
+            </div>         
         
         <!-- Edit Task -->
        
         <div>
-            <div class="modal fade" id="exampleModal2${i}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Task</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal fade" id="exampleModal2${i}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel" >Edit Task</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                        <div class="mb-3">
+                            <label for="task-title2" class="form-label modal-input-title">Title</label> 
+                            <input type="text" class="form-control" id="task-title${i}" value="${arr[i].objtitle}">
+                            <div class="invalid-feedback">
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="mb-3">
-                                    <label for="task-title2" class="form-label">Title*</label> 
-                                    <input type="text" class="form-control" id="task-title${i} " value="${arr[i].objtitle}">
-                                    <div class="invalid-feedback">
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="task-description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="task-description${i}" rows="3" placeholder="Add your task description.">${arr[i].objdescription} </textarea>
-                                </div>
-                                <label for="task-description" class="form-label">Due date</label>
-                                <input type="date"  class="form-control mt-2 mb-3" id="theDate${i}" value="${arr[i].objdate}"></input>
-                            </form>
+                        <div class="mb-3">
+                            <label for="task-description" class="form-label modal-input-title">Description</label>
+                            <textarea class="form-control" id="task-description${i}" rows="3">${arr[i].objdescription} </textarea>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit"  class="btn btn-primary" data-bs-dismiss="modal" onclick='editTask(${i})'>Save</button>
-                        </div>
+                        <label for="task-description" class="form-label modal-input-title ">Due date</label>
+                        <input type="date"  class="form-control mt-2 mb-3" id="theDate${i}" value="${arr[i].objdate}"></input>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit"  class="btn btn-primary" data-bs-dismiss="modal" onclick='editTask(${i})' id="edit-task">Update</button>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
 
         <!-- Delete Task -->
@@ -268,7 +277,7 @@ function completedTask(){
         <div class="modal fade" id="exampleModaldel${i}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close ms-auto m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                     <div class="modal-header border-0 pt-4 d-flex justify-content-center">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Task?</h1>
                     </div>
@@ -289,35 +298,79 @@ function completedTask(){
 }
 
 
+// Diaplay All
+function displayAll() {
+    document.querySelector('.completed').style.display = "block";
+    document.querySelector('.completed-tasks').style.display = "block";
+    document.querySelector('#active').style.display = "block";
+    document.querySelector('.active-tasks').style.display = "block";
+}
 
-
-function displaynone() {
+// Diaplay Active
+function displayActive() {
     document.querySelector('.completed').style.display = "none";
     document.querySelector('.completed-tasks').style.display = "none";
     document.querySelector('#active').style.display = "block";
     document.querySelector('.active-tasks').style.display = "block";
 }
 
-function completeddisnone() {
+// Display Completed
+function displayCompleted() {
     document.querySelector('#active').style.display = "none";
     document.querySelector('.active-tasks').style.display = "none";
     document.querySelector('.completed').style.display = "block";
     document.querySelector('.completed-tasks').style.display = "block";
 }
 
-function displayblock() {
-    document.querySelector('.completed').style.display = "block";
-    document.querySelector('.completed-tasks').style.display = "block";
-    document.querySelector('#active').style.display = "block";
-    document.querySelector('.active-tasks').style.display = "block";
+// Task Count
+function taskCount() {
+    allCount.innerHTML = "0"
+    activeCount.innerHTML = "0"
+    completedCount.innerHTML = "0"
+    for(i=0; i<arr.length; i++) {
+        allCount.innerHTML++;
+        if(arr[i].isCompleted == false) {
+            activeCount.innerHTML++;
+        }
+        if(arr[i].isCompleted == true) {
+            completedCount.innerHTML++;
+        }
+    }
 }
 
+taskCount()
+
+// Clear Completed Task
 function clearCompleted() {
-    deleteItem();
+    for(j=0; j<arr.length;j++){
+        if(arr[j].isCompleted == true){
+            arr.splice(j,1)
+            j--
+        }
+        activeTask()
+        completedTask()  
+        console.log(arr)
+    }
+    localStorage.setItem("taskData",JSON.stringify(arr))
 }
 
+// Search Box
+function search() {
+    const searchBox = document.getElementById("search-item").value.toLowerCase();
+    const tasks = document.getElementById("active")
+    const taskItem = document.querySelectorAll(".task-item")
+    const taskName = tasks.getElementsByTagName("h1")
+    for (var i = 0; i < taskName.length; i++){
+        let match = taskItem[i].getElementsByTagName('h1')[0];        
+        if (match){
+            let textValue = match.textContent || match.innerHTML           
+            if (textValue.toLocaleLowerCase().indexOf(searchBox) > -1) {
+                taskItem[i].style.display = " ";
+            } else {
+                taskItem[i].style.display = "none";
+            }
+        }
+    }
+    
+}
 
-// var mydate = new Date(arr[i].objdate);
-// var month = ["January", "February", "March", "April", "May", "June",
-// "July", "August", "September", "October", "November", "December"][mydate.getMonth()];
-// var bydate = month + ' ' + mydate.getFullYear();

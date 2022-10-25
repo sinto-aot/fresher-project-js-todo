@@ -41,7 +41,8 @@
 }
 
 
-.addedtaskheading{
+
+.task-title{
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 600;
@@ -98,3 +99,27 @@ input.rounded-circle {
     border-color: green !important;
 }
 
+.modal-input-title{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #282829;
+}
+
+.all-tasks-title{
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 20px;
+    color: #09174A;
+}
+.tasks-title{
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #09174A;
+    opacity: 0.6;
+}
+
+#nav-border{
+    border-bottom:  4px solid #0C39C7; 
+}
