@@ -12,6 +12,7 @@
    <body>
       <div class="container mt-5">
          <h1 class="mytasks">My Tasks</h1>
+<!-- Navbar -->
          <nav class="navbar navbar-expand-lg ps-0 border-bottom">
             <div class="container-fluid ps-0">
                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,19 +21,16 @@
                <div class="collapse navbar-collapse ps-0" id="navbarTogglerDemo03">
                   <ul class="navbar-nav me-auto  mb-lg-0">
                      <li class="nav-item mt-0">
-                        <a class="nav-link active ps-0   " aria-current="page" href="#" id="nav-border"  onclick=" displayCompleted(); displayAll();">All  (<span id="all-count"></span>) </a>
+                        <a class="nav-link active ps-0   " aria-current="page" href="#" id="nav-border"  onclick="displayAll();">All  (<span id="all-count"></span>) </a>
                      </li>
                      <li class="nav-item ms-5">
                         <a class="nav-link " href="#" onclick=" displayActive()">Active (<span id="active-count"></span>)</a>
                      </li>
                      <li class="nav-item ms-5">
-                        <a class="nav-link " href="#"  onclick="completedTask(); displayCompleted()">Completed (<span id="completed-count"></span>)</a>
+                        <a class="nav-link " href="#"  onclick=" displayCompleted()">Completed (<span id="completed-count"></span>)</a>
                      </li>
                   </ul>
-                  <!-- <form class="d-flex" role="search">
-                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">Date
-                     <button class="btn btn-outline-success" type="submit">Search</button>
-                     </form> -->
+                
                   <div class="d-flex gap-4">
                      <button type="button" class="btn btn-primary add-btn" data-bs-toggle="modal" data-bs-target="#exampleModal">Add New Task</button>
                      <button type="button" class="btn btn-outline-primary" onclick="clearCompleted()">Clear Completed Tasks</button>
@@ -42,12 +40,14 @@
          </nav>
          <div class="d-flex justify-content-between align-items-center">
             <div class="row d-flex justify-content-start mt-4 align-items-center col-10">
+<!-- Search Task -->
                <div class="col-md-5">
                   <div class="d-flex align-items-center">
-                     <input type="text" class="form-control " id="search-item"  placeholder="Search by task name ">
+                     <input type="text" class="form-control " id="search-task"  placeholder="Search by task name " onkeyup="searchTask()" >
                   </div>
                </div>
             </div>
+<!-- Sort Task -->
             <div class="d-flex col-md-2 ">
                <label for="" class="form-label col-md-4 mt-2">Sort by :</label>
                <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -65,9 +65,11 @@
            </div>
          </div>
 
+
+<!-- Active Task -->
          <h1 class="mt-4 active-tasks">Active tasks</h1>
-         <div>
-   
+         <div>   
+<!-- Add Task Modal -->
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                <div class="modal-dialog">
                   <div class="modal-content">
@@ -94,27 +96,61 @@
                      </div>
                      <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit "  class="btn btn-primary " data-bs-dismiss="modal" onclick="displaycheck()" id="add-task">Add Task</button>
+                        <button type="submit "  class="btn btn-primary " data-bs-dismiss="modal" onclick="" id="add-task">Add Task</button>
                      </div>
                   </div>
                </div>
             </div>
          </div>
 
+
+      <!-- Edit Task -->
+
+            <div class="modal fade" id="exampleModal2${i}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel" >Edit Task</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                            <div class="mb-3">
+                                <label for="task-title2" class="form-label modal-input-title">Title</label> 
+                                <input type="text" class="form-control" id="task-title" value="">
+                                <div class="invalid-feedback">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="task-description" class="form-label modal-input-title">Description</label>
+                                <textarea class="form-control" id="task-description" rows="3"></textarea>
+                            </div>
+                            <label for="task-description" class="form-label modal-input-title ">Due date</label>
+                            <input type="date"  class="form-control mt-2 mb-3" id="theDate" value=""></input>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit"  class="btn btn-primary" data-bs-dismiss="modal" onclick='editTask()' id="edit-task">Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
     <!-- Active Tasks -->
          <div id="active">
 
          </div>
-
-         <!-- Edit Tasks -->
-
          
-
+    <!-- Completed Tasks -->
          <h1 class="mt-4 completed-tasks">Completed tasks</h1>
          <div class="completed">
 
          </div>
       </div>
+
+
+
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
       <script src="main.js"></script>
    </body>
