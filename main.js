@@ -51,13 +51,14 @@ function activeTask() {
                     <div class="ms-3">
                         <label class="form-check-label" for="check">
                             <h1 class="task-title "> ${arr[i].objtitle} <img src="img/yellow-dot.png" ></h1>                         
-                            <p class="date"><img src="img/calender-icon.png"> by ${arr[i].objdate} </p>                           
+                            <p class="date" id="date${i}"><img src="img/calender-icon.png" > by ${arr[i].objdate} </p>                           
                         </label>
                     </div>
                 </div>
                 <button class="edit" data-bs-toggle="modal" data-bs-target="#exampleModal2${i}" ><img src="img/edit-icon.png"></button>
                 <button class="delete me-4"><img src="img/delete-icon.png" data-bs-toggle="modal" data-bs-target="#exampleModaldel${i}"></i></button>
             </div>
+
         <!-- Edit Task -->
        
         <div>
@@ -113,8 +114,10 @@ function activeTask() {
             </div>
         </div>
         `;
+        getDate(i)
     }
   }
+  
 
   clear();
 }
@@ -195,7 +198,7 @@ function completedTask() {
   document.querySelector(".completed").innerHTML = "";
   for (i = 0; i < arr.length; i++) {
     if (arr[i].isCompleted == true) {
-      document.querySelector("body > div > div.completed").innerHTML += ` 
+      document.querySelector(".completed").innerHTML += ` 
             <!-- Add Tasks -->
             <div  class="d-flex justify-content-between align-items-center taskcontent mt-3 ">
                 <div class="form-check d-flex ms-4">
@@ -205,7 +208,7 @@ function completedTask() {
                     <div class="ms-3">
                         <label class="form-check-label" for="check">
                             <h1 class="task-title "> ${arr[i].objtitle} <img src="img/green-dot.png" ><h1>                         
-                            <p class="date"><img src="img/calender-icon.png"> by ${arr[i].objdate}<p>                          
+                            <p class="date" id="date${i}"><img src="img/calender-icon.png" > by ${arr[i].objdate}<p>                          
                         </label>
                     </div>
                 </div>
@@ -214,8 +217,7 @@ function completedTask() {
             </div>         
         
         <!-- Edit Task -->
-       
-        <div>
+       <div>
             <div class="modal fade" id="exampleModal2${i}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -246,8 +248,7 @@ function completedTask() {
                     </div>
                 </div>
             </div>
-         </div>
-
+        </div>
 
         <!-- Delete Task -->
 
@@ -374,7 +375,7 @@ function searchActive() {
                   <div class="ms-3">
                       <label class="form-check-label" for="check">
                           <h1 class="task-title "> ${arr[searchData[i]].objtitle} <img src="img/yellow-dot.png" ></h1>                         
-                          <p class="date"><img src="img/calender-icon.png"> by ${arr[searchData[i]].objdate} </p>                           
+                          <p class="date" id="date"><img src="img/calender-icon.png" > by ${arr[searchData[i]].objdate} </p>                           
                       </label>
                   </div>
               </div>
@@ -398,7 +399,7 @@ function searchCompleted() {
                   <div class="ms-3">
                       <label class="form-check-label" for="check">
                           <h1 class="task-title "> ${arr[searchData[i]].objtitle} <img src="img/yellow-dot.png" ></h1>                         
-                          <p class="date"><img src="img/calender-icon.png"> by ${arr[searchData[i]].objdate} </p>                           
+                          <p class="date" id="date"><img src="img/calender-icon.png" > by ${arr[searchData[i]].objdate} </p>                           
                       </label>
                   </div>
               </div>
@@ -406,4 +407,16 @@ function searchCompleted() {
               <button class="delete me-4"><img src="img/delete-icon.png" data-bs-toggle="modal" data-bs-target="#exampleModaldel${searchData[i]}"></button>
           </div> `
   }
+}
+
+
+function getDate(index) {
+  let currentDate = new Date();
+  let todoDAte = new Date(arr[index].objdate);
+  if(currentDate > todoDAte)
+  { 
+    document.getElementById(`date${index}`).style.color = " #C03503";
+    document.getElementById(`date${index}`).style.backgroundColor = "rgba(192, 53, 3, 0.06)";
+  }
+  
 }
